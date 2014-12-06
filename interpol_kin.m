@@ -1,5 +1,11 @@
 function [mergm,Mobj] = interpol_kin(filename)
 
+% ----------------------------
+% Author : Atesh Koul
+% Italian Institute of technology, Genoa
+% ----------------------------
+
+
 % Alternate way using two other functions- interpolData and
 % interpolDataStatic
 

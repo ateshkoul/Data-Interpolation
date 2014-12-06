@@ -1,4 +1,7 @@
-
+% ----------------------------
+% Author : Atesh Koul
+% Italian Institute of technology, Genoa
+% ----------------------------
 
 % script to save all_subjects_without interpolation_no_nans for the columns that we are interested in 
 % given here by p variable
