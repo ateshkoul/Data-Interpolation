@@ -1,0 +1,160 @@
+function mergm = interpol_kin(filename)
+
+% function to read an excel file with data from multiple subjects and
+% output an interpolated excel file
+
+%   * This function requires the POI library to be in your javapath.
+%     To add the Apache POI Library execute commands: 
+%     (This assumes the POI lib files are in folder 'poi_library')
+      jpath = '/home/atesh/Instituto_Italiano_di_tecnologia/Programs/20130227_xlwrite/20130227_xlwrite/';
+      javaaddpath(fullfile(jpath,'poi_library/poi-3.8-20120326.jar'));
+      javaaddpath(fullfile(jpath,'poi_library/poi-ooxml-3.8-20120326.jar'));
+      javaaddpath(fullfile(jpath,'poi_library/poi-ooxml-schemas-3.8-20120326.jar'));
+      javaaddpath(fullfile(jpath,'poi_library/xmlbeans-2.3.0.jar'));
+      javaaddpath(fullfile(jpath,'poi_library/dom4j-1.6.1.jar'));
+
+
+% evaluate the parameters
+if nargin<1
+   [a,b] = uigetfile('*.xlsx','Multiselect','on');
+   filename = fullfile(b,a);
+end
+
+clear a b;
+
+% read the file name
+A = importdata(filename);
+
+% getting the header information - useful for understanding which is the
+% important feature 
+
+%header = A.textdata.S003;
+
+Data = A.data;
+% find all the sheets in the file
+sheet = fieldnames(Data);
+nsheet = size(sheet,1);
+
+% loop over all the subjects; last sheet is just the average so sheet-1
+for i = 1:nsheet-4
+    sheet_data = getfield(Data,sheet{i});
+    %sheet_data = sheet_data(:,[1 2 8:27]);
+    % loop over all the conditions 1 and 2
+    % find number of conditions (in our case only two - 1,2)
+    nobjs = nanunique(sheet_data(:,2));
+    for j= 1:size(nobjs,1)
+        obj{j} = sheet_data(sheet_data(:,2)==nobjs(j),1:251);
+        
+%         origObj{j}=obj{j};
+        
+        % matrix of the other static columns
+        %temp_mat= obj{j}
+        
+        % changed to interpolate all the new variables that are going to be
+        % used and not not going to be used
+        
+        % the column names refer to the column names in the origional file
+        % <insert a saved copy of the file>
+
+        nan_mat = [3 4 5 6 7 28:34 35 36:39 220 221 242 243 244 245:251];
+        
+        % not a very accurate way to use the global mean for the object
+        % irrespective of the trials. 
+        % PS NOTE: THIS IS PERFORMED SUBJECT-WISE SO THERE IS NOT A SINGLE
+        % VALUE THAT IS SUBSTITUTED, BUT RATHER THE MEAN OF THE SUBJECT'S
+        % VALUE
+        % better way to impliment this would to take 10 elements at a time.
+        % also better way is to substitute obj{j} with a temp matrix to
+        % make the code look easier and better
+        for k=1:size(nan_mat,2)
+        if any(isnan(obj{j}(:,nan_mat(k))))
+            obj{j}(isnan(obj{j}(:,nan_mat(k))),nan_mat(k))= nanmean(obj{j}(:,nan_mat(k)),1);
+        end
+        end             
+        % inefficient way of manually specifying the columns
+        % better implimentation can use the column names from the sheet 
+        
+        % similarly for this, the interpolation is done for all the columns
+        % irrespective of whether they are used or not
+        
+        % the selection of teh columns is made in the script where u choose
+        % which columns to consider for the analysis.
+        rep_nan1 = inpaint_nans(obj{j}(:,8:17));
+        rep_nan2 = inpaint_nans(obj{j}(:,18:27));
+        rep_nan3 = inpaint_nans(obj{j}(:,40:49));
+        rep_nan4 = inpaint_nans(obj{j}(:,50:59));
+        rep_nan5 = inpaint_nans(obj{j}(:,60:69));
+        rep_nan6 = inpaint_nans(obj{j}(:,70:79));
+        rep_nan7 = inpaint_nans(obj{j}(:,80:89));
+        rep_nan8 = inpaint_nans(obj{j}(:,90:99));
+        rep_nan9 = inpaint_nans(obj{j}(:,100:109));
+        rep_nan10 = inpaint_nans(obj{j}(:,110:119));
+        rep_nan11 = inpaint_nans(obj{j}(:,120:129));
+        rep_nan12 = inpaint_nans(obj{j}(:,130:139));
+        rep_nan13 = inpaint_nans(obj{j}(:,140:149));
+        rep_nan14 = inpaint_nans(obj{j}(:,150:159));
+        rep_nan15 = inpaint_nans(obj{j}(:,160:169));
+        rep_nan16 = inpaint_nans(obj{j}(:,170:179));
+        rep_nan17 = inpaint_nans(obj{j}(:,180:189));
+        rep_nan18 = inpaint_nans(obj{j}(:,190:199));
+        rep_nan19 = inpaint_nans(obj{j}(:,200:209));
+        rep_nan20 = inpaint_nans(obj{j}(:,210:219));
+        rep_nan21 = inpaint_nans(obj{j}(:,222:231));
+        rep_nan22 = inpaint_nans(obj{j}(:,232:241));
+        
+        % interpolate using all the trials of the same type
+        %intp_nan1 = inpaint_nans(rep_nan1);
+        %intp_nan2 = inpaint_nans(rep_nan2);
+        
+
+        
+        obj{j}(:,8:17) = rep_nan1;
+        obj{j}(:,18:27) = rep_nan2;
+        obj{j}(:,40:49) = rep_nan3;
+        obj{j}(:,50:59) = rep_nan4;
+        obj{j}(:,60:69) = rep_nan5;
+        obj{j}(:,70:79) = rep_nan6;
+        obj{j}(:,80:89) = rep_nan7;
+        obj{j}(:,90:99) = rep_nan8;
+        obj{j}(:,100:109) = rep_nan9;
+        obj{j}(:,110:119) = rep_nan10;
+        obj{j}(:,120:129) = rep_nan11;
+        obj{j}(:,130:139) = rep_nan12;
+        obj{j}(:,140:149) = rep_nan13;
+        obj{j}(:,150:159) = rep_nan14;        
+        obj{j}(:,160:169) = rep_nan15;
+        obj{j}(:,170:179) = rep_nan16;
+        obj{j}(:,180:189) = rep_nan17;
+        obj{j}(:,190:199) = rep_nan18;
+        obj{j}(:,200:209) = rep_nan19;
+        obj{j}(:,210:219) = rep_nan20;
+        obj{j}(:,222:231) = rep_nan21;
+        obj{j}(:,232:241) = rep_nan22;
+        
+        
+        Mobj{i,j} = obj{j};
+%         MorigObj{i,j} = origObj{j};
+        
+    end
+end
+clear i j k;
+
+
+% merge, sort and print the matrices
+for i = 1:size(Mobj,1)
+    mergm{i} = [Mobj{i,1}; Mobj{i,2}];
+    mergm{i} = sortrows(mergm{i});
+    
+%     mergmOri{i} = [MorigObj{i,1};MorigObj{i,2}];
+%     mergmOri{i} = sortrows(mergmOri{i});
+end
+
+clear i
+
+
+% % save the interpolated excel sheet
+% for i=1:nsheet-1
+%     xlwrite('Interpolated.xls',mergm{i},sheet{i})
+% end
+
+
